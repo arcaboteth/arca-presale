@@ -1,0 +1,1189 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>$ARCA Presale | AI Agent on Base</title>
+    <meta name="description" content="$ARCA presale — The AI agent that thinks. Trustless deposits on Base with automatic refunds.">
+    <meta property="og:title" content="$ARCA Presale | AI Agent on Base">
+    <meta property="og:description" content="Community presale for $ARCA. 48h window, 10% early bird bonus, trustless smart contract with automatic refunds.">
+    <meta property="og:image" content="/avatar.png">
+    <meta property="og:type" content="website">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="$ARCA Presale | AI Agent on Base">
+    <link rel="icon" type="image/png" href="/avatar.png">
+    <script src="ethers.min.js"></script>
+    <script>
+        // Config for wallet connector (set before wallet-bundle loads)
+        window.ARCA_CONFIG = {
+            chainId: 84532,
+            rpcUrl: 'https://base-sepolia.g.alchemy.com/v2/rm_fENO6bCAfkTl4PKLEE',
+            wcProjectId: '267a604b2a6d3def9a69504ea62b1280',
+        };
+    </script>
+    <script src="wallet-bundle.js"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap');
+        :root {
+            --bg: #06090f;
+            --bg-elevated: #0c1220;
+            --bg-card: #111827;
+            --bg-card-hover: #1a2540;
+            --border: rgba(245, 158, 11, 0.08);
+            --border-hover: rgba(245, 158, 11, 0.25);
+            --text: #f1f5f9;
+            --text-secondary: #94a3b8;
+            --text-muted: #64748b;
+            --accent: #f59e0b;
+            --accent-hover: #fbbf24;
+            --gold: #fbbf24;
+            --green: #22c55e;
+            --blue: #3b82f6;
+            --red: #ef4444;
+            --purple: #8b5cf6;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            min-height: 100vh;
+            overflow-x: hidden;
+            -webkit-font-smoothing: antialiased;
+        }
+        .ambient {
+            position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+            pointer-events: none; z-index: 0;
+            background:
+                radial-gradient(ellipse 600px 400px at 15% 10%, rgba(245,158,11,0.07) 0%, transparent 100%),
+                radial-gradient(ellipse 400px 600px at 85% 80%, rgba(59,130,246,0.04) 0%, transparent 100%);
+        }
+        .page { position: relative; z-index: 1; max-width: 680px; margin: 0 auto; padding: 0 1.25rem 3rem; }
+
+        /* Nav */
+        .nav {
+            display: flex; justify-content: space-between; align-items: center;
+            padding: 1.25rem 0; border-bottom: 1px solid rgba(255,255,255,0.04);
+            margin-bottom: 2rem;
+        }
+        .nav-brand {
+            display: flex; align-items: center; gap: 0.5rem;
+            font-weight: 700; font-size: 0.9rem; color: var(--text);
+            text-decoration: none;
+        }
+        .nav-brand img { width: 28px; height: 28px; border-radius: 6px; }
+        .nav-links { display: flex; gap: 0.5rem; }
+        .nav-link {
+            padding: 0.4rem 0.8rem; border-radius: 8px; font-size: 0.78rem;
+            color: var(--text-secondary); text-decoration: none;
+            transition: all 0.2s; font-weight: 500;
+        }
+        .nav-link:hover { color: var(--text); background: rgba(255,255,255,0.05); }
+
+        /* Status badge */
+        .status-badge {
+            display: inline-flex; align-items: center; gap: 0.4rem;
+            padding: 0.35rem 0.75rem; border-radius: 20px; font-size: 0.75rem;
+            font-weight: 600; margin-bottom: 1rem;
+        }
+        .status-badge.live {
+            background: rgba(34, 197, 94, 0.12); color: var(--green);
+            border: 1px solid rgba(34, 197, 94, 0.2);
+        }
+        .status-badge.early-bird {
+            background: rgba(245, 158, 11, 0.12); color: var(--gold);
+            border: 1px solid rgba(245, 158, 11, 0.2);
+        }
+        .status-badge.ended {
+            background: rgba(239, 68, 68, 0.12); color: var(--red);
+            border: 1px solid rgba(239, 68, 68, 0.2);
+        }
+        .status-badge .dot {
+            width: 6px; height: 6px; border-radius: 50%;
+            background: currentColor; animation: pulse 2s infinite;
+        }
+        @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.4; } }
+
+        /* Hero */
+        h1 {
+            font-size: 1.75rem; font-weight: 800; margin-bottom: 0.5rem;
+            background: linear-gradient(135deg, var(--text) 0%, var(--accent) 100%);
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+        }
+        .subtitle { color: var(--text-secondary); font-size: 0.9rem; margin-bottom: 1.5rem; line-height: 1.5; }
+
+        /* Cards */
+        .card {
+            background: var(--bg-card); border: 1px solid var(--border);
+            border-radius: 12px; padding: 1.5rem; margin-bottom: 1rem;
+        }
+        .card-title {
+            font-size: 0.72rem; font-weight: 600; text-transform: uppercase;
+            letter-spacing: 0.06em; color: var(--text-muted); margin-bottom: 1rem;
+        }
+
+        /* Progress bar */
+        .progress-wrap { margin-bottom: 1rem; }
+        .progress-header { display: flex; justify-content: space-between; margin-bottom: 0.5rem; }
+        .progress-label { font-size: 0.8rem; color: var(--text-secondary); }
+        .progress-value { font-size: 0.8rem; font-weight: 600; font-family: 'JetBrains Mono', monospace; }
+        .progress-bar {
+            width: 100%; height: 12px; background: rgba(255,255,255,0.06);
+            border-radius: 6px; overflow: hidden; position: relative;
+        }
+        .progress-fill {
+            height: 100%; border-radius: 6px; transition: width 0.6s ease;
+            background: linear-gradient(90deg, var(--accent), var(--gold));
+            position: relative;
+        }
+        .progress-fill.met {
+            background: linear-gradient(90deg, var(--green), #4ade80);
+        }
+        .soft-cap-marker {
+            position: absolute; top: -4px; bottom: -4px; width: 2px;
+            background: var(--accent); z-index: 2;
+        }
+        .soft-cap-label {
+            position: absolute; top: -20px; font-size: 0.65rem; color: var(--accent);
+            transform: translateX(-50%); white-space: nowrap; font-weight: 600;
+        }
+
+        /* Stats grid */
+        .stats { display: grid; grid-template-columns: repeat(2, 1fr); gap: 0.75rem; }
+        .stat-item {
+            background: rgba(255,255,255,0.03); border-radius: 8px;
+            padding: 0.75rem; text-align: center;
+        }
+        .stat-value {
+            font-size: 1.1rem; font-weight: 700;
+            font-family: 'JetBrains Mono', monospace; color: var(--text);
+        }
+        .stat-label { font-size: 0.7rem; color: var(--text-muted); margin-top: 0.2rem; }
+
+        /* Timer */
+        .timer {
+            display: flex; justify-content: center; gap: 0.75rem;
+            margin: 1rem 0;
+        }
+        .timer-unit { text-align: center; }
+        .timer-value {
+            font-size: 1.5rem; font-weight: 800;
+            font-family: 'JetBrains Mono', monospace;
+            color: var(--gold); min-width: 2.5rem;
+        }
+        .timer-label { font-size: 0.6rem; text-transform: uppercase; color: var(--text-muted); letter-spacing: 0.05em; }
+        .timer-sep { font-size: 1.5rem; color: var(--text-muted); font-weight: 700; line-height: 1.6; }
+
+        /* Contribution form */
+        .form-group { margin-bottom: 1rem; }
+        .form-label {
+            font-size: 0.78rem; font-weight: 600; color: var(--text-secondary);
+            margin-bottom: 0.4rem; display: flex; justify-content: space-between;
+        }
+        .input-wrap {
+            display: flex; align-items: center; background: rgba(255,255,255,0.04);
+            border: 1px solid rgba(255,255,255,0.08); border-radius: 10px;
+            padding: 0 0.75rem; transition: border-color 0.2s;
+        }
+        .input-wrap:focus-within { border-color: var(--accent); }
+        .input-wrap input {
+            flex: 1; background: none; border: none; color: var(--text);
+            font-size: 1.1rem; font-family: 'JetBrains Mono', monospace;
+            padding: 0.75rem 0; outline: none; width: 100%;
+        }
+        .input-wrap input::placeholder { color: var(--text-muted); }
+        .input-suffix { color: var(--text-muted); font-size: 0.85rem; font-weight: 600; }
+        .quick-amounts {
+            display: flex; gap: 0.4rem; margin-top: 0.5rem;
+        }
+        .quick-btn {
+            flex: 1; padding: 0.4rem; border: 1px solid rgba(255,255,255,0.08);
+            border-radius: 6px; background: rgba(255,255,255,0.03);
+            color: var(--text-secondary); font-size: 0.72rem; font-weight: 600;
+            cursor: pointer; transition: all 0.2s; font-family: 'JetBrains Mono', monospace;
+        }
+        .quick-btn:hover { border-color: var(--accent); color: var(--accent); background: rgba(245,158,11,0.06); }
+
+        /* Allocation preview */
+        .allocation {
+            background: rgba(245, 158, 11, 0.06); border: 1px solid rgba(245, 158, 11, 0.12);
+            border-radius: 8px; padding: 0.75rem 1rem; margin-bottom: 1rem;
+            display: flex; justify-content: space-between; align-items: center;
+        }
+        .allocation-label { font-size: 0.78rem; color: var(--accent); }
+        .allocation-value {
+            font-size: 0.9rem; font-weight: 700; color: var(--gold);
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        /* Buttons */
+        .btn {
+            width: 100%; padding: 0.9rem; border: none; border-radius: 10px;
+            font-size: 0.9rem; font-weight: 700; cursor: pointer;
+            transition: all 0.2s; font-family: 'Inter', sans-serif;
+        }
+        .btn-primary {
+            background: linear-gradient(135deg, var(--accent), var(--gold));
+            color: #000; box-shadow: 0 4px 20px rgba(245, 158, 11, 0.3);
+        }
+        .btn-primary:hover { transform: translateY(-1px); box-shadow: 0 6px 25px rgba(245, 158, 11, 0.4); }
+        .btn-primary:disabled {
+            opacity: 0.5; cursor: not-allowed; transform: none;
+            box-shadow: 0 2px 10px rgba(245, 158, 11, 0.15);
+        }
+        .btn-connect {
+            background: rgba(59, 130, 246, 0.15); color: var(--blue);
+            border: 1px solid rgba(59, 130, 246, 0.3);
+        }
+        .btn-connect:hover { background: rgba(59, 130, 246, 0.25); }
+        .btn-refund {
+            background: rgba(239, 68, 68, 0.1); color: var(--red);
+            border: 1px solid rgba(239, 68, 68, 0.2); margin-top: 0.5rem;
+        }
+        .btn-refund:hover { background: rgba(239, 68, 68, 0.2); }
+        .btn-refund:disabled { opacity: 0.3; cursor: not-allowed; }
+
+        /* Wallet connected */
+        .wallet-info {
+            display: flex; align-items: center; gap: 0.5rem;
+            padding: 0.5rem 0.75rem; background: rgba(34, 197, 94, 0.08);
+            border: 1px solid rgba(34, 197, 94, 0.15); border-radius: 8px;
+            margin-bottom: 1rem; font-size: 0.78rem;
+        }
+        .wallet-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--green); }
+        .wallet-addr { color: var(--green); font-family: 'JetBrains Mono', monospace; font-weight: 600; }
+        .wallet-bal { color: var(--text-muted); margin-left: auto; }
+        .btn-disconnect {
+            background: none; border: none; color: var(--text-muted);
+            cursor: pointer; font-size: 0.7rem; padding: 0.2rem 0.4rem;
+        }
+        .btn-disconnect:hover { color: var(--red); }
+
+        /* Info section */
+        .info-grid { display: grid; gap: 0.6rem; }
+        .info-row {
+            display: flex; justify-content: space-between; align-items: center;
+            padding: 0.5rem 0; border-bottom: 1px solid rgba(255,255,255,0.03);
+        }
+        .info-row:last-child { border-bottom: none; }
+        .info-key { font-size: 0.78rem; color: var(--text-muted); }
+        .info-val { font-size: 0.78rem; font-weight: 600; color: var(--text); font-family: 'JetBrains Mono', monospace; }
+
+        /* Trust badges */
+        .trust-list { display: grid; gap: 0.5rem; margin-top: 0.5rem; }
+        .trust-item {
+            display: flex; align-items: flex-start; gap: 0.5rem;
+            font-size: 0.78rem; color: var(--text-secondary); line-height: 1.4;
+        }
+        .trust-icon { font-size: 0.85rem; flex-shrink: 0; margin-top: 0.1rem; }
+
+        /* Contributors */
+        .contributors-list {
+            max-height: 200px; overflow-y: auto; margin-top: 0.5rem;
+        }
+        .contributor-row {
+            display: flex; justify-content: space-between; align-items: center;
+            padding: 0.4rem 0; border-bottom: 1px solid rgba(255,255,255,0.02);
+            font-size: 0.72rem;
+        }
+        .contributor-addr { color: var(--text-secondary); font-family: 'JetBrains Mono', monospace; }
+        .contributor-amount { color: var(--text); font-family: 'JetBrains Mono', monospace; font-weight: 600; }
+        .contributor-badge {
+            font-size: 0.6rem; padding: 0.1rem 0.3rem; border-radius: 4px;
+            background: rgba(245, 158, 11, 0.12); color: var(--gold); margin-left: 0.3rem;
+        }
+
+        /* Toast */
+        .toast {
+            position: fixed; bottom: 1.5rem; left: 50%; transform: translateX(-50%);
+            padding: 0.75rem 1.25rem; border-radius: 10px; font-size: 0.82rem;
+            font-weight: 600; z-index: 100; opacity: 0; transition: opacity 0.3s;
+            pointer-events: none; max-width: 90%;
+        }
+        .toast.show { opacity: 1; }
+        .toast.success { background: rgba(34, 197, 94, 0.9); color: #fff; }
+        .toast.error { background: rgba(239, 68, 68, 0.9); color: #fff; }
+        .toast.info { background: rgba(59, 130, 246, 0.9); color: #fff; }
+
+        /* Loading spinner */
+        .spinner {
+            display: inline-block; width: 16px; height: 16px;
+            border: 2px solid rgba(0,0,0,0.2); border-top: 2px solid #000;
+            border-radius: 50%; animation: spin 0.8s linear infinite;
+            vertical-align: middle; margin-right: 0.4rem;
+        }
+        @keyframes spin { to { transform: rotate(360deg); } }
+
+        /* Network warning */
+        .network-warning {
+            background: rgba(239, 68, 68, 0.1); border: 1px solid rgba(239, 68, 68, 0.2);
+            border-radius: 8px; padding: 0.75rem 1rem; margin-bottom: 1rem;
+            font-size: 0.8rem; color: var(--red); display: none;
+        }
+
+        /* Early bird banner */
+        .early-bird-banner {
+            background: linear-gradient(135deg, rgba(245, 158, 11, 0.1), rgba(251, 191, 36, 0.05));
+            border: 1px solid rgba(245, 158, 11, 0.2);
+            border-radius: 10px; padding: 0.85rem 1rem; margin-bottom: 1rem;
+            display: flex; align-items: center; gap: 0.6rem;
+        }
+        .early-bird-banner .eb-icon { font-size: 1.2rem; }
+        .early-bird-banner .eb-text { font-size: 0.8rem; color: var(--gold); font-weight: 600; }
+        .early-bird-banner .eb-sub { font-size: 0.72rem; color: var(--text-muted); }
+
+        /* Contract link */
+        .contract-link {
+            text-align: center; margin-top: 1rem; font-size: 0.72rem;
+        }
+        .contract-link a {
+            color: var(--text-muted); text-decoration: none;
+            font-family: 'JetBrains Mono', monospace;
+            transition: color 0.2s;
+        }
+        .contract-link a:hover { color: var(--accent); }
+
+        /* Your contribution */
+        .your-contribution {
+            background: rgba(34, 197, 94, 0.06); border: 1px solid rgba(34, 197, 94, 0.12);
+            border-radius: 8px; padding: 0.75rem 1rem; margin-bottom: 1rem;
+        }
+        .your-contribution .yc-title { font-size: 0.72rem; color: var(--green); font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; }
+        .your-contribution .yc-row { display: flex; justify-content: space-between; margin-top: 0.3rem; }
+        .your-contribution .yc-label { font-size: 0.78rem; color: var(--text-secondary); }
+        .your-contribution .yc-val { font-size: 0.78rem; font-weight: 600; font-family: 'JetBrains Mono', monospace; }
+
+        /* Responsive */
+        @media (max-width: 480px) {
+            h1 { font-size: 1.4rem; }
+            .stats { grid-template-columns: repeat(2, 1fr); }
+            .timer-value { font-size: 1.2rem; }
+            .card { padding: 1.15rem; }
+        }
+
+        .hidden { display: none !important; }
+    </style>
+</head>
+<body>
+    <div class="ambient"></div>
+    <div class="page">
+        <!-- Nav -->
+        <nav class="nav">
+            <a href="/" class="nav-brand">
+                <img src="/avatar.png" alt="Arca"> Arca
+            </a>
+            <div class="nav-links">
+                <a href="/" class="nav-link">Home</a>
+                <a href="/presale/" class="nav-link" style="color: var(--accent);">Presale</a>
+            </div>
+        </nav>
+
+        <!-- Status -->
+        <div id="statusBadge" class="status-badge live">
+            <span class="dot"></span>
+            <span id="statusText">Loading...</span>
+        </div>
+
+        <!-- Hero -->
+        <h1>$ARCA Presale</h1>
+        <p class="subtitle">
+            The AI agent that thinks. Community presale on Base — trustless smart contract, automatic refunds, 10% bonus for early believers.
+        </p>
+
+        <!-- Early bird banner -->
+        <div id="earlyBirdBanner" class="early-bird-banner hidden">
+            <span class="eb-icon">🐦</span>
+            <div>
+                <div class="eb-text">Early Bird Active — 10% Bonus!</div>
+                <div class="eb-sub">Contribute before the soft cap is reached and your allocation is weighted as if you sent 10% more. You're taking the real risk — you deserve more.</div>
+            </div>
+        </div>
+
+        <!-- Network warning -->
+        <div id="networkWarning" class="network-warning">
+            ⚠️ Please switch to <strong>Base</strong> network. <a href="#" id="switchNetwork" style="color: var(--accent); text-decoration: underline;">Switch now</a>
+        </div>
+
+        <!-- Progress Card -->
+        <div class="card">
+            <div class="card-title">Presale Progress</div>
+            <div class="progress-wrap">
+                <div class="progress-header">
+                    <span class="progress-label">Raised</span>
+                    <span class="progress-value"><span id="raisedEth">0.00</span> / <span id="hardCapEth">12.50</span> ETH</span>
+                </div>
+                <div class="progress-bar" style="position: relative;">
+                    <div id="progressFill" class="progress-fill" style="width: 0%;"></div>
+                    <div id="softCapMarker" class="soft-cap-marker" style="left: 40%;">
+                        <span class="soft-cap-label">Soft Cap</span>
+                    </div>
+                </div>
+            </div>
+            <div class="stats">
+                <div class="stat-item">
+                    <div class="stat-value" id="raisedUsd">$0</div>
+                    <div class="stat-label">Raised (USD)</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value" id="contributorCount">0</div>
+                    <div class="stat-label">Contributors</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value" id="softCapPct">0%</div>
+                    <div class="stat-label">Soft Cap Progress</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value" id="avgContribution">0 ETH</div>
+                    <div class="stat-label">Avg Contribution</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Timer Card -->
+        <div class="card">
+            <div class="card-title" id="timerTitle">Time Remaining</div>
+            <div class="timer">
+                <div class="timer-unit">
+                    <div class="timer-value" id="timerH">00</div>
+                    <div class="timer-label">Hours</div>
+                </div>
+                <div class="timer-sep">:</div>
+                <div class="timer-unit">
+                    <div class="timer-value" id="timerM">00</div>
+                    <div class="timer-label">Minutes</div>
+                </div>
+                <div class="timer-sep">:</div>
+                <div class="timer-unit">
+                    <div class="timer-value" id="timerS">00</div>
+                    <div class="timer-label">Seconds</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Contribute Card -->
+        <div class="card" id="contributeCard">
+            <div class="card-title">Contribute</div>
+
+            <!-- Connect Wallet -->
+            <div id="connectSection">
+                <button class="btn btn-connect" id="connectBtn" onclick="openWalletModal()">
+                    🔗 Connect Wallet
+                </button>
+            </div>
+
+            <!-- Wallet Connected -->
+            <div id="walletSection" class="hidden">
+                <div class="wallet-info">
+                    <span class="wallet-dot"></span>
+                    <span class="wallet-addr" id="walletAddr">0x...</span>
+                    <span class="wallet-bal" id="walletBal">0.00 ETH</span>
+                    <button class="btn-disconnect" onclick="disconnectWallet()">✕</button>
+                </div>
+
+                <!-- Your existing contribution -->
+                <div id="yourContribution" class="your-contribution hidden">
+                    <div class="yc-title">Your Contribution</div>
+                    <div class="yc-row">
+                        <span class="yc-label">ETH Sent</span>
+                        <span class="yc-val" id="yourActual">0 ETH</span>
+                    </div>
+                    <div class="yc-row">
+                        <span class="yc-label">Effective Weight</span>
+                        <span class="yc-val" id="yourEffective">0 ETH</span>
+                    </div>
+                    <div class="yc-row">
+                        <span class="yc-label">Remaining Capacity</span>
+                        <span class="yc-val" id="yourRemaining">1.00 ETH</span>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <div class="form-label">
+                        <span>Amount</span>
+                        <span style="font-size: 0.7rem; color: var(--text-muted);">Min 0.01 · Max 1 ETH</span>
+                    </div>
+                    <div class="input-wrap">
+                        <input type="number" id="ethAmount" placeholder="0.00" step="0.01" min="0.01" max="1" oninput="updateAllocation()">
+                        <span class="input-suffix">ETH</span>
+                    </div>
+                    <div class="quick-amounts">
+                        <button class="quick-btn" onclick="setAmount(0.01)">0.01</button>
+                        <button class="quick-btn" onclick="setAmount(0.1)">0.1</button>
+                        <button class="quick-btn" onclick="setAmount(0.25)">0.25</button>
+                        <button class="quick-btn" onclick="setAmount(0.5)">0.5</button>
+                        <button class="quick-btn" onclick="setAmount(1)">MAX</button>
+                    </div>
+                </div>
+
+                <div id="allocationPreview" class="allocation hidden">
+                    <span class="allocation-label">Estimated $ARCA allocation</span>
+                    <span class="allocation-value" id="estAllocation">—</span>
+                </div>
+
+                <button class="btn btn-primary" id="contributeBtn" onclick="contribute()" disabled>
+                    Contribute
+                </button>
+
+                <button class="btn btn-refund hidden" id="refundBtn" onclick="requestRefund()" disabled>
+                    Request Refund
+                </button>
+            </div>
+        </div>
+
+        <!-- Presale Details -->
+        <div class="card">
+            <div class="card-title">Presale Details</div>
+            <div class="info-grid">
+                <div class="info-row">
+                    <span class="info-key">Token</span>
+                    <span class="info-val">$ARCA on Base</span>
+                </div>
+                <div class="info-row">
+                    <span class="info-key">Supply</span>
+                    <span class="info-val">100,000,000,000</span>
+                </div>
+                <div class="info-row">
+                    <span class="info-key">Presale Allocation</span>
+                    <span class="info-val">10% (10B ARCA)</span>
+                </div>
+                <div class="info-row">
+                    <span class="info-key">Soft Cap</span>
+                    <span class="info-val" id="softCapDisplay">5.00 ETH (~$10K)</span>
+                </div>
+                <div class="info-row">
+                    <span class="info-key">Hard Cap</span>
+                    <span class="info-val" id="hardCapDisplay">12.50 ETH (~$25K)</span>
+                </div>
+                <div class="info-row">
+                    <span class="info-key">Duration</span>
+                    <span class="info-val">48 hours</span>
+                </div>
+                <div class="info-row">
+                    <span class="info-key">Min / Max</span>
+                    <span class="info-val">0.01 / 1 ETH</span>
+                </div>
+                <div class="info-row">
+                    <span class="info-key">Early Bird</span>
+                    <span class="info-val" style="color: var(--gold);">+10% before soft cap</span>
+                </div>
+                <div class="info-row">
+                    <span class="info-key">Vesting</span>
+                    <span class="info-val">7d lock + 7d vest</span>
+                </div>
+                <div class="info-row">
+                    <span class="info-key">LP Allocation</span>
+                    <span class="info-val">85% of supply</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Backed By -->
+        <div class="card" style="border-color: rgba(139, 92, 246, 0.15);">
+            <div class="card-title" style="color: var(--purple);">Backed By</div>
+            <div style="display: flex; align-items: flex-start; gap: 1rem; margin-bottom: 0.75rem;">
+                <div style="width: 40px; height: 40px; border-radius: 10px; background: linear-gradient(135deg, var(--purple), var(--blue)); display: flex; align-items: center; justify-content: center; font-size: 1.2rem; flex-shrink: 0;">🧑‍💻</div>
+                <div>
+                    <div style="font-weight: 700; font-size: 0.9rem;">neetguy.eth</div>
+                    <div style="font-size: 0.75rem; color: var(--text-secondary); margin-top: 0.15rem;">First Investor — 2.5% OTC Allocation</div>
+                </div>
+            </div>
+            <div style="font-size: 0.78rem; color: var(--text-secondary); line-height: 1.5; margin-bottom: 0.75rem;">
+                neetguy.eth committed before the presale was even announced — evaluating the project and putting his reputation behind it. His 2.5% allocation (2.5B ARCA) is distributed via the same airdrop mechanism as presale buyers.
+            </div>
+            <div class="info-grid" style="margin-bottom: 0;">
+                <div class="info-row">
+                    <span class="info-key">Allocation</span>
+                    <span class="info-val">2.5% (2.5B ARCA)</span>
+                </div>
+                <div class="info-row">
+                    <span class="info-key">Type</span>
+                    <span class="info-val">OTC (pre-presale)</span>
+                </div>
+                <div class="info-row">
+                    <span class="info-key">Vesting</span>
+                    <span class="info-val">7d lock + 7d vest</span>
+                </div>
+                <div class="info-row">
+                    <span class="info-key">Socials</span>
+                    <span class="info-val"><a href="https://warpcast.com/neetguy.eth" style="color: var(--purple); text-decoration: none;" target="_blank">Farcaster</a> · <a href="https://twitter.com/theneetguy" style="color: var(--purple); text-decoration: none;" target="_blank">Twitter</a></span>
+                </div>
+            </div>
+            <div style="margin-top: 0.75rem; padding: 0.6rem 0.75rem; background: rgba(139, 92, 246, 0.06); border: 1px solid rgba(139, 92, 246, 0.1); border-radius: 8px; font-size: 0.72rem; color: var(--text-muted); line-height: 1.4;">
+                💡 <strong style="color: var(--text-secondary);">Why this matters:</strong> An experienced crypto figure evaluated the project and committed capital before anyone else. This isn't just a random token — it's been vetted.
+            </div>
+        </div>
+
+        <!-- Trust / Anti-Rug -->
+        <div class="card">
+            <div class="card-title">Anti-Rug Design</div>
+            <div class="trust-list">
+                <div class="trust-item"><span class="trust-icon">🔒</span> Team tokens locked 120 days (30d cliff + 90d vest) — longest lock of anyone</div>
+                <div class="trust-item"><span class="trust-icon">🛡️</span> Trustless contract — your ETH is refundable if soft cap isn't met</div>
+                <div class="trust-item"><span class="trust-icon">🐋</span> 1 ETH max per wallet — no whale can dominate the presale</div>
+                <div class="trust-item"><span class="trust-icon">💧</span> 85% of supply goes to liquidity — not team wallets</div>
+                <div class="trust-item"><span class="trust-icon">👤</span> Verified identity — ERC-8004 on 16 chains, Farcaster verified, public blog</div>
+                <div class="trust-item"><span class="trust-icon">⏰</span> Safety net — if owner doesn't finalize within 7 days of end, refunds auto-enable</div>
+                <div class="trust-item"><span class="trust-icon">📖</span> Open source contract — <a href="#" id="contractExplorer" style="color: var(--accent);">verify on BaseScan</a></div>
+            </div>
+        </div>
+
+        <!-- Contributors -->
+        <div class="card">
+            <div class="card-title">Contributors (<span id="contribCountLabel">0</span>)</div>
+            <div id="contributorsList" class="contributors-list">
+                <div style="text-align: center; color: var(--text-muted); font-size: 0.8rem; padding: 1rem;">
+                    No contributions yet. Be the first! 🚀
+                </div>
+            </div>
+        </div>
+
+        <!-- Contract link -->
+        <div class="contract-link">
+            Contract: <a href="#" id="contractAddr" target="_blank">Loading...</a>
+        </div>
+    </div>
+
+    <!-- Toast -->
+    <div id="toast" class="toast"></div>
+
+    <script>
+    // ═══════════════════════════════════════════════════
+    // CONFIG — Update these before launch
+    // ═══════════════════════════════════════════════════
+    const CONFIG = {
+        // Contract address — update after deployment
+        contractAddress: '0x287d647F0A4573819D2E82BC58f12D8D4f6aA78f',
+
+        // Chain — TESTNET (Base Sepolia) for private testing
+        chainId: 84532, // Base Sepolia
+        chainName: 'Base Sepolia',
+        rpcUrl: 'https://base-sepolia.g.alchemy.com/v2/rm_fENO6bCAfkTl4PKLEE',
+        rpcUrlFallback: 'https://sepolia.base.org', // Public fallback
+        explorerUrl: 'https://sepolia.basescan.org',
+
+        // Token info
+        presaleTokens: 10_000_000_000, // 10B ARCA
+        ethPrice: 2000, // Approximate — updated live if possible
+
+        // For local testing, override:
+        // chainId: 31337,
+        // chainName: 'Anvil (Local)',
+        // rpcUrl: 'http://127.0.0.1:8545',
+        // explorerUrl: '',
+    };
+
+    // ABI (minimal for what the frontend needs)
+    const ABI = [
+        "function deposit() external payable",
+        "function refund() external",
+        "function getPresaleInfo() external view returns (uint256, uint256, uint256, uint256, uint256, bool, bool, bool)",
+        "function getContribution(address) external view returns (uint256, uint256)",
+        "function getContributors() external view returns (address[])",
+        "function contributions(address) external view returns (uint256)",
+        "function effectiveContributions(address) external view returns (uint256)",
+        "function maxContribution() external view returns (uint256)",
+        "function totalRaised() external view returns (uint256)",
+        "function finalized() external view returns (bool)",
+        "event Contributed(address indexed contributor, uint256 amount, uint256 effective, bool earlyBird)",
+        "event Refunded(address indexed contributor, uint256 amount)",
+        "event Finalized(uint256 totalRaised, uint256 contributorCount)",
+    ];
+
+    // ═══════════════════════════════════════════════════
+    // STATE
+    // ═══════════════════════════════════════════════════
+    let provider = null;
+    let signer = null;
+    let contract = null;
+    let readContract = null;
+    let userAddress = null;
+    let presaleInfo = null;
+
+    // ═══════════════════════════════════════════════════
+    // INIT
+    // ═══════════════════════════════════════════════════
+    async function init() {
+        try {
+            // Read-only provider with fallback
+            let readProvider;
+            try {
+                readProvider = new ethers.JsonRpcProvider(CONFIG.rpcUrl);
+                await readProvider.getBlockNumber(); // Test connection
+            } catch (e) {
+                console.warn('Primary RPC failed, using fallback:', e.message);
+                readProvider = new ethers.JsonRpcProvider(CONFIG.rpcUrlFallback || 'https://mainnet.base.org');
+            }
+            readContract = new ethers.Contract(CONFIG.contractAddress, ABI, readProvider);
+
+            await refreshPresaleData();
+            startTimer();
+
+            // Auto-connect if previously connected
+            try {
+                if (window.ethereum) {
+                    const accts = await window.ethereum.request({ method: 'eth_accounts' });
+                    if (accts && accts.length > 0) {
+                        console.log('[ARCA] Auto-reconnecting:', accts[0]);
+                        window.onWalletConnected(window.ethereum, accts[0], 'Browser Wallet');
+                    }
+                }
+            } catch (e) {
+                console.warn('[ARCA] Auto-connect failed:', e);
+            }
+        } catch (e) {
+            console.error('Init error:', e);
+            showToast('Failed to load presale data. Check network.', 'error');
+        }
+    }
+
+    // ═══════════════════════════════════════════════════
+    // WALLET
+    // ═══════════════════════════════════════════════════
+    // Called by wallet-bundle.js when a wallet connects successfully
+    window.onWalletConnected = async (walletProvider, address, walletName) => {
+        try {
+            provider = new ethers.BrowserProvider(walletProvider);
+            signer = await provider.getSigner();
+            userAddress = address || await signer.getAddress();
+
+            // Check network and try to switch
+            try {
+                const network = await provider.getNetwork();
+                if (Number(network.chainId) !== CONFIG.chainId) {
+                    document.getElementById('networkWarning').style.display = 'block';
+                    try {
+                        await walletProvider.request({
+                            method: 'wallet_switchEthereumChain',
+                            params: [{ chainId: '0x' + CONFIG.chainId.toString(16) }],
+                        });
+                        document.getElementById('networkWarning').style.display = 'none';
+                        // Refresh provider after chain switch
+                        provider = new ethers.BrowserProvider(walletProvider);
+                        signer = await provider.getSigner();
+                    } catch (switchError) {
+                        if (switchError.code === 4902) {
+                            await walletProvider.request({
+                                method: 'wallet_addEthereumChain',
+                                params: [{
+                                    chainId: '0x' + CONFIG.chainId.toString(16),
+                                    chainName: CONFIG.chainName,
+                                    rpcUrls: [CONFIG.rpcUrl],
+                                    nativeCurrency: { name: 'ETH', symbol: 'ETH', decimals: 18 },
+                                    blockExplorerUrls: [CONFIG.explorerUrl],
+                                }],
+                            });
+                        }
+                    }
+                }
+            } catch (e) {
+                console.warn('Network check failed:', e);
+            }
+
+            contract = new ethers.Contract(CONFIG.contractAddress, ABI, signer);
+
+            // Update UI
+            document.getElementById('connectSection').classList.add('hidden');
+            document.getElementById('walletSection').classList.remove('hidden');
+            document.getElementById('walletAddr').textContent = userAddress.slice(0, 6) + '...' + userAddress.slice(-4);
+
+            // Get balance
+            const balance = await provider.getBalance(userAddress);
+            document.getElementById('walletBal').textContent = parseFloat(ethers.formatEther(balance)).toFixed(4) + ' ETH';
+
+            // Get user contribution
+            await refreshUserContribution();
+            updateContributeButton();
+
+            // Listen for changes (if supported)
+            try {
+                walletProvider.on?.('accountsChanged', () => location.reload());
+                walletProvider.on?.('chainChanged', () => location.reload());
+            } catch {}
+
+            showToast(`Connected via ${walletName || 'wallet'}!`, 'success');
+        } catch (e) {
+            console.error('Connect error:', e);
+            showToast('Failed to connect: ' + (e.message || e), 'error');
+        }
+    };
+
+    window.onWalletError = (msg) => {
+        showToast(msg || 'Wallet connection failed', 'error');
+    };
+
+    // Legacy fallback: direct connect for old browsers
+    async function connectWallet() {
+        if (window.openWalletModal) {
+            window.openWalletModal();
+        } else if (window.ethereum) {
+            // Fallback if bundle didn't load
+            const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' });
+            window.onWalletConnected(window.ethereum, accounts[0], 'Browser Wallet');
+        } else {
+            showToast('No wallet detected. Install MetaMask or Coinbase Wallet.', 'error');
+        }
+    }
+
+    function disconnectWallet() {
+        userAddress = null;
+        signer = null;
+        contract = null;
+        document.getElementById('connectSection').classList.remove('hidden');
+        document.getElementById('walletSection').classList.add('hidden');
+        document.getElementById('yourContribution').classList.add('hidden');
+    }
+
+    document.getElementById('switchNetwork')?.addEventListener('click', async (e) => {
+        e.preventDefault();
+        if (window.ethereum) {
+            await window.ethereum.request({
+                method: 'wallet_switchEthereumChain',
+                params: [{ chainId: '0x' + CONFIG.chainId.toString(16) }],
+            });
+        }
+    });
+
+    // ═══════════════════════════════════════════════════
+    // DATA
+    // ═══════════════════════════════════════════════════
+    async function refreshPresaleData() {
+        try {
+            const info = await readContract.getPresaleInfo();
+            presaleInfo = {
+                totalRaised: info[0],
+                softCap: info[1],
+                hardCap: info[2],
+                contributorCount: Number(info[3]),
+                timeRemaining: Number(info[4]),
+                isActive: info[5],
+                isEarlyBird: info[6],
+                finalized: info[7],
+            };
+
+            updateProgressUI();
+            updateStatusUI();
+            await refreshContributors();
+        } catch (e) {
+            console.error('Data refresh error:', e);
+            // If contract not deployed yet, show placeholder
+            document.getElementById('statusText').textContent = 'Not Started';
+        }
+    }
+
+    async function refreshUserContribution() {
+        if (!userAddress || !readContract) return;
+        try {
+            const [actual, effective] = await readContract.getContribution(userAddress);
+            const maxCont = await readContract.maxContribution();
+            const actualEth = parseFloat(ethers.formatEther(actual));
+            const effectiveEth = parseFloat(ethers.formatEther(effective));
+            const maxEth = parseFloat(ethers.formatEther(maxCont));
+            const remaining = maxEth - actualEth;
+
+            if (actualEth > 0) {
+                document.getElementById('yourContribution').classList.remove('hidden');
+                document.getElementById('yourActual').textContent = actualEth.toFixed(4) + ' ETH';
+                document.getElementById('yourEffective').textContent = effectiveEth.toFixed(4) + ' ETH';
+                document.getElementById('yourRemaining').textContent = remaining.toFixed(2) + ' ETH';
+
+                // Update max on input
+                document.getElementById('ethAmount').max = remaining;
+            }
+
+            // Show refund button if applicable
+            if (actualEth > 0 && presaleInfo && !presaleInfo.isActive && !presaleInfo.finalized) {
+                document.getElementById('refundBtn').classList.remove('hidden');
+                document.getElementById('refundBtn').disabled = false;
+            }
+        } catch (e) {
+            console.error('User contribution error:', e);
+        }
+    }
+
+    async function refreshContributors() {
+        try {
+            const rawContributors = await readContract.getContributors();
+            const contributors = Array.from(rawContributors); // Clone to avoid read-only Result
+            const list = document.getElementById('contributorsList');
+            const countLabel = document.getElementById('contribCountLabel');
+            countLabel.textContent = contributors.length;
+
+            if (contributors.length === 0) {
+                list.innerHTML = '<div style="text-align: center; color: var(--text-muted); font-size: 0.8rem; padding: 1rem;">No contributions yet. Be the first! 🚀</div>';
+                return;
+            }
+
+            let html = '';
+            // Fetch all contributions in parallel for speed
+            const contribPromises = contributors.map(addr => readContract.getContribution(addr));
+            const results = await Promise.allSettled(contribPromises);
+
+            for (let i = contributors.length - 1; i >= 0; i--) {
+                const addr = contributors[i];
+                const shortAddr = addr.slice(0, 6) + '...' + addr.slice(-4);
+                const isYou = userAddress && addr.toLowerCase() === userAddress.toLowerCase();
+
+                let ethVal = 0, isEarlyBird = false;
+                if (results[i].status === 'fulfilled') {
+                    const [actual, effective] = results[i].value;
+                    ethVal = parseFloat(ethers.formatEther(actual));
+                    const effVal = parseFloat(ethers.formatEther(effective));
+                    isEarlyBird = effVal > ethVal * 1.001;
+                }
+
+                html += `<div class="contributor-row">
+                    <span class="contributor-addr">${shortAddr}${isYou ? ' <span style="color: var(--green);">(you)</span>' : ''}</span>
+                    <span>
+                        <span class="contributor-amount">${ethVal.toFixed(4)} ETH</span>
+                        ${isEarlyBird ? '<span class="contributor-badge">🐦 +10%</span>' : ''}
+                    </span>
+                </div>`;
+            }
+            list.innerHTML = html;
+        } catch (e) {
+            console.error('Contributors error:', e);
+        }
+    }
+
+    // ═══════════════════════════════════════════════════
+    // UI UPDATES
+    // ═══════════════════════════════════════════════════
+    function updateProgressUI() {
+        if (!presaleInfo) return;
+
+        const raised = parseFloat(ethers.formatEther(presaleInfo.totalRaised));
+        const softCap = parseFloat(ethers.formatEther(presaleInfo.softCap));
+        const hardCap = parseFloat(ethers.formatEther(presaleInfo.hardCap));
+
+        document.getElementById('raisedEth').textContent = raised.toFixed(2);
+        document.getElementById('hardCapEth').textContent = hardCap.toFixed(2);
+        document.getElementById('raisedUsd').textContent = '$' + Math.round(raised * CONFIG.ethPrice).toLocaleString();
+        document.getElementById('contributorCount').textContent = presaleInfo.contributorCount;
+        document.getElementById('softCapPct').textContent = Math.min(100, Math.round((raised / softCap) * 100)) + '%';
+
+        const avg = presaleInfo.contributorCount > 0 ? (raised / presaleInfo.contributorCount) : 0;
+        document.getElementById('avgContribution').textContent = avg.toFixed(3) + ' ETH';
+
+        // Progress bar
+        const pct = Math.min(100, (raised / hardCap) * 100);
+        const fill = document.getElementById('progressFill');
+        fill.style.width = pct + '%';
+        if (raised >= softCap) fill.classList.add('met');
+
+        // Soft cap marker
+        const softPct = (softCap / hardCap) * 100;
+        document.getElementById('softCapMarker').style.left = softPct + '%';
+    }
+
+    function updateStatusUI() {
+        if (!presaleInfo) return;
+        const badge = document.getElementById('statusBadge');
+        const text = document.getElementById('statusText');
+        const banner = document.getElementById('earlyBirdBanner');
+
+        if (presaleInfo.finalized) {
+            badge.className = 'status-badge ended';
+            text.textContent = 'Finalized';
+            banner.classList.add('hidden');
+            document.getElementById('contributeCard').classList.add('hidden');
+        } else if (!presaleInfo.isActive && presaleInfo.timeRemaining === 0) {
+            badge.className = 'status-badge ended';
+            text.textContent = 'Ended';
+            banner.classList.add('hidden');
+        } else if (presaleInfo.isEarlyBird) {
+            badge.className = 'status-badge early-bird';
+            text.textContent = 'Early Bird Active';
+            banner.classList.remove('hidden');
+        } else if (presaleInfo.isActive) {
+            badge.className = 'status-badge live';
+            text.textContent = 'Live';
+            banner.classList.add('hidden');
+        }
+
+        // Update contract links
+        if (CONFIG.explorerUrl && CONFIG.contractAddress !== '0x0000000000000000000000000000000000000000') {
+            const url = CONFIG.explorerUrl + '/address/' + CONFIG.contractAddress;
+            document.getElementById('contractAddr').href = url;
+            document.getElementById('contractAddr').textContent = CONFIG.contractAddress.slice(0, 6) + '...' + CONFIG.contractAddress.slice(-4);
+            document.getElementById('contractExplorer').href = url;
+        }
+    }
+
+    function updateContributeButton() {
+        const btn = document.getElementById('contributeBtn');
+        if (!presaleInfo || !presaleInfo.isActive) {
+            btn.disabled = true;
+            btn.textContent = presaleInfo?.finalized ? 'Presale Finalized' : 'Presale Not Active';
+        } else {
+            btn.disabled = false;
+            btn.textContent = 'Contribute';
+        }
+    }
+
+    function updateAllocation() {
+        const amount = parseFloat(document.getElementById('ethAmount').value) || 0;
+        const preview = document.getElementById('allocationPreview');
+        const est = document.getElementById('estAllocation');
+
+        if (amount <= 0) {
+            preview.classList.add('hidden');
+            return;
+        }
+
+        preview.classList.remove('hidden');
+
+        // Calculate based on current raise + this contribution
+        if (presaleInfo) {
+            const currentRaised = parseFloat(ethers.formatEther(presaleInfo.totalRaised));
+            const effectiveAmount = presaleInfo.isEarlyBird ? amount * 1.1 : amount;
+            // This is approximate — actual depends on total effective contributions
+            const totalEffectiveEstimate = currentRaised * 1.05 + effectiveAmount; // rough avg
+            const share = effectiveAmount / totalEffectiveEstimate;
+            const tokens = Math.round(CONFIG.presaleTokens * share);
+            est.textContent = formatNumber(tokens) + ' ARCA';
+        } else {
+            // Assume we're the only contributor
+            const tokens = Math.round(CONFIG.presaleTokens * (amount / 12.5));
+            est.textContent = '~' + formatNumber(tokens) + ' ARCA';
+        }
+    }
+
+    function setAmount(val) {
+        document.getElementById('ethAmount').value = val;
+        updateAllocation();
+    }
+
+    function formatNumber(n) {
+        if (n >= 1e9) return (n / 1e9).toFixed(2) + 'B';
+        if (n >= 1e6) return (n / 1e6).toFixed(2) + 'M';
+        if (n >= 1e3) return (n / 1e3).toFixed(1) + 'K';
+        return n.toLocaleString();
+    }
+
+    // ═══════════════════════════════════════════════════
+    // TIMER
+    // ═══════════════════════════════════════════════════
+    let timerInterval = null;
+    let remainingSeconds = 0;
+
+    function startTimer() {
+        if (presaleInfo) {
+            remainingSeconds = presaleInfo.timeRemaining;
+        }
+        updateTimerDisplay();
+        timerInterval = setInterval(() => {
+            if (remainingSeconds > 0) remainingSeconds--;
+            updateTimerDisplay();
+            if (remainingSeconds <= 0) {
+                clearInterval(timerInterval);
+                refreshPresaleData(); // Refresh when timer hits 0
+            }
+        }, 1000);
+    }
+
+    function updateTimerDisplay() {
+        const h = Math.floor(remainingSeconds / 3600);
+        const m = Math.floor((remainingSeconds % 3600) / 60);
+        const s = remainingSeconds % 60;
+        document.getElementById('timerH').textContent = String(h).padStart(2, '0');
+        document.getElementById('timerM').textContent = String(m).padStart(2, '0');
+        document.getElementById('timerS').textContent = String(s).padStart(2, '0');
+    }
+
+    // ═══════════════════════════════════════════════════
+    // TRANSACTIONS
+    // ═══════════════════════════════════════════════════
+    async function contribute() {
+        if (!contract || !signer) return showToast('Connect your wallet first', 'error');
+
+        const amount = parseFloat(document.getElementById('ethAmount').value);
+        if (!amount || amount < 0.01 || amount > 1) {
+            return showToast('Enter between 0.01 and 1 ETH', 'error');
+        }
+
+        const btn = document.getElementById('contributeBtn');
+        btn.disabled = true;
+        btn.innerHTML = '<span class="spinner"></span> Confirming...';
+
+        try {
+            const value = ethers.parseEther(amount.toString());
+            const tx = await contract.deposit({ value });
+            btn.innerHTML = '<span class="spinner"></span> Mining...';
+            showToast('Transaction submitted! Waiting for confirmation...', 'info');
+
+            await tx.wait();
+            showToast('🎉 Contribution successful! Thank you!', 'success');
+
+            // Refresh everything
+            await refreshPresaleData();
+            await refreshUserContribution();
+            document.getElementById('ethAmount').value = '';
+            document.getElementById('allocationPreview').classList.add('hidden');
+        } catch (e) {
+            console.error('Contribute error:', e);
+            let msg = 'Transaction failed';
+            if (e.reason) msg = e.reason;
+            else if (e.message?.includes('user rejected')) msg = 'Transaction rejected';
+            else if (e.message?.includes('AboveMaximum')) msg = 'Exceeds max contribution (1 ETH)';
+            else if (e.message?.includes('BelowMinimum')) msg = 'Below minimum (0.01 ETH)';
+            else if (e.message?.includes('HardCapExceeded')) msg = 'Hard cap reached!';
+            else if (e.message?.includes('PresaleNotActive')) msg = 'Presale is not active';
+            showToast(msg, 'error');
+        } finally {
+            updateContributeButton();
+        }
+    }
+
+    async function requestRefund() {
+        if (!contract || !signer) return;
+
+        const btn = document.getElementById('refundBtn');
+        btn.disabled = true;
+        btn.innerHTML = '<span class="spinner"></span> Processing...';
+
+        try {
+            const tx = await contract.refund();
+            showToast('Refund submitted! Waiting for confirmation...', 'info');
+            await tx.wait();
+            showToast('✅ Refund successful! ETH returned to your wallet.', 'success');
+            await refreshPresaleData();
+            await refreshUserContribution();
+        } catch (e) {
+            console.error('Refund error:', e);
+            let msg = 'Refund failed';
+            if (e.message?.includes('RefundNotAvailable')) msg = 'Refund not available — soft cap was met';
+            else if (e.message?.includes('user rejected')) msg = 'Transaction rejected';
+            showToast(msg, 'error');
+        } finally {
+            btn.disabled = false;
+            btn.textContent = 'Request Refund';
+        }
+    }
+
+    // ═══════════════════════════════════════════════════
+    // TOAST
+    // ═══════════════════════════════════════════════════
+    function showToast(msg, type = 'info') {
+        const toast = document.getElementById('toast');
+        toast.textContent = msg;
+        toast.className = 'toast ' + type + ' show';
+        setTimeout(() => toast.classList.remove('show'), 4000);
+    }
+
+    // ═══════════════════════════════════════════════════
+    // REFRESH LOOP
+    // ═══════════════════════════════════════════════════
+    setInterval(async () => {
+        try { await refreshPresaleData(); } catch {}
+        if (userAddress) {
+            try { await refreshUserContribution(); } catch {}
+        }
+    }, 15000); // Every 15 seconds
+
+    // ═══════════════════════════════════════════════════
+    // BOOT
+    // ═══════════════════════════════════════════════════
+    window.addEventListener('load', init);
+    </script>
+</body>
+</html>

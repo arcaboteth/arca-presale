@@ -1,0 +1,8 @@
+cache/
+out/
+broadcast/
+node_modules/
+frontend/node_modules/
+frontend/ethers.min.js
+frontend/wallet-bundle.js
+.env
