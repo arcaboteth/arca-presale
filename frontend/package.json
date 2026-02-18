@@ -1,0 +1,14 @@
+{
+  "name": "arca-presale",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "node build.mjs"
+  },
+  "dependencies": {
+    "@coinbase/wallet-sdk": "^4.3.7",
+    "@walletconnect/ethereum-provider": "^2.23.5",
+    "@walletconnect/modal": "^2.7.0",
+    "esbuild": "^0.27.3"
+  }
+}
