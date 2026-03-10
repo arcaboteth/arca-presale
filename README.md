@@ -1,8 +1,22 @@
 # $ARCA Presale
 
-Trustless community presale contract for [$ARCA](https://arcabot.eth.limo) on Base.
+Trustless community presale contract for [$ARCA](https://arcabot.ai) on Base.
 
 > **Everything is open source, tested, and verifiable. Read the code. Check the tests. Verify on-chain.**
+
+## 🟢 Mainnet Deployment — LIVE
+
+| | |
+|-|-|
+| **Contract** | [`0x5c8E7c4e9Eb8A417B67AB9C2837Ab9b5E2EF98C2`](https://basescan.org/address/0x5c8E7c4e9Eb8A417B67AB9C2837Ab9b5E2EF98C2) |
+| **Chain** | Base (Chain ID: 8453) |
+| **Deploy Tx** | [`0xca535d...42ec6`](https://basescan.org/tx/0xca535d58d5a39ed0df14124d2bdbf12ebaa135739799f0d7a4f87530b7342ec6) |
+| **Verified** | ✅ [Source code verified on BaseScan](https://basescan.org/address/0x5c8E7c4e9Eb8A417B67AB9C2837Ab9b5E2EF98C2#code) |
+| **Owner** | [`0x1be93C700dDC596D701E8F2106B8F9166C625Adb`](https://basescan.org/address/0x1be93C700dDC596D701E8F2106B8F9166C625Adb) (arcabot.eth) |
+| **Compiler** | Solidity 0.8.24 |
+| **Start** | March 10, 2026 20:42:19 UTC |
+| **End** | March 12, 2026 20:42:19 UTC |
+| **Presale Site** | [presale.arcabot.ai](https://presale.arcabot.ai) |
 
 ---
 
@@ -46,7 +60,7 @@ This isn't "trust me bro" — it's enforced by the smart contract:
 | 🐋 **Anti-whale** | 1 ETH max per wallet — no single wallet dominates | [Contract L85](src/ArcaPresale.sol) |
 | 💧 **85% to LP** | Majority of supply goes to liquidity, not team | Tokenomics |
 | ⏰ **Safety timer** | If owner doesn't finalize within 7 days of end, refunds auto-enable | [Contract L148-L150](src/ArcaPresale.sol) |
-| 👤 **Verified identity** | ERC-8004 agent registered on 16 chains | [8004scan](https://www.8004scan.io/agents/ethereum/22775) |
+| 👤 **Verified identity** | ERC-8004 agent registered on 18 chains | [8004scan](https://www.8004scan.io/agents/ethereum/22775) |
 | 📖 **Open source** | Every line of code — contract, tests, frontend — is right here | This repo |
 
 ---
@@ -132,6 +146,7 @@ See screenshots and full details in **[TESTING-REPORT.md](TESTING-REPORT.md)**.
 - **Source:** [`src/ArcaPresale.sol`](src/ArcaPresale.sol) — 211 lines
 - **Tests:** [`test/ArcaPresale.t.sol`](test/ArcaPresale.t.sol) — 251 lines, 17 tests
 - **Deploy script:** [`script/Deploy.s.sol`](script/Deploy.s.sol)
+- **Mainnet:** [`0x5c8E7c4e9Eb8A417B67AB9C2837Ab9b5E2EF98C2`](https://basescan.org/address/0x5c8E7c4e9Eb8A417B67AB9C2837Ab9b5E2EF98C2) (Base) — ✅ Verified
 - **Testnet:** [`0x287d647F0A4573819D2E82BC58f12D8D4f6aA78f`](https://sepolia.basescan.org/address/0x287d647F0A4573819D2E82BC58f12D8D4f6aA78f) (Base Sepolia)
 - **Testing report:** [`TESTING-REPORT.md`](TESTING-REPORT.md) — full audit with 34 test cases
 
@@ -172,10 +187,10 @@ cd frontend && npm install && node build.mjs
 
 | | |
 |-|-|
-| **Website** | [arcabot.eth.limo](https://arcabot.eth.limo) |
-| **Presale** | [arcabot.eth.limo/presale/](https://arcabot.eth.limo/presale/) |
-| **Website repo** | [github.com/arcabotai/arcabot.eth](https://github.com/arcabotai/arcabot.eth) |
-| **Farcaster** | [@arcabot](https://farcaster.xyz/arcabot) |
+| **Website** | [arcabot.ai](https://arcabot.ai) |
+| **Presale** | [presale.arcabot.ai](https://presale.arcabot.ai) |
+| **Contract** | [BaseScan](https://basescan.org/address/0x5c8E7c4e9Eb8A417B67AB9C2837Ab9b5E2EF98C2) |
+| **Farcaster** | [@arcabot](https://farcaster.xyz/arcabot.eth) |
 | **Twitter** | [@arcabotai](https://x.com/arcabotai) |
 | **Blog** | [paragraph.com/@arcabot](https://paragraph.com/@arcabot) |
 | **8004scan** | [Agent #22775](https://www.8004scan.io/agents/ethereum/22775) |
@@ -184,6 +199,6 @@ cd frontend && npm install && node build.mjs
 
 ## Built by
 
-[**Arca**](https://arcabot.eth.limo) — AI agent on Ethereum & Base. Built by [felirami.eth](https://etherscan.io/address/felirami.eth).
+[**Arca**](https://arcabot.ai) — AI agent on Ethereum & Base. Built by [felirami.eth](https://etherscan.io/address/felirami.eth).
 
-Agent #0 on Optimism, Mantle & Metis. Registered on 16 chains via ERC-8004.
+Agent #0 on Optimism, Mantle & Metis. Registered on 18 chains via ERC-8004.
